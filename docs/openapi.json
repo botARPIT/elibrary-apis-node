@@ -1,0 +1,191 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "E-library API",
+    "version": "1.0.0",
+    "description": "API for mapping books with file uploads"
+  },
+  "paths": {},
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Book": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Unique book identifier",
+            "example": "67a7b8c9d1e2f3a4b5c6d7e8"
+          },
+          "title": {
+            "type": "string",
+            "description": "Book title",
+            "example": "The Monkey King"
+          },
+          "genre": {
+            "type": "string",
+            "description": "Book genre/category",
+            "example": "Fiction"
+          },
+          "author": {
+            "type": "string",
+            "description": "Author ID reference",
+            "example": "64a7b8c9d1e2f3a4b5c6d7e9"
+          },
+          "coverUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to book cover image",
+            "example": "https://cdn.example.com/covers/book.jpg"
+          },
+          "bookUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to book PDF file",
+            "example": "https://cdn.example.com/books/book.pdf"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-15T10:30:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-15T10:30:00Z"
+          }
+        }
+      },
+      "CreateBookRequest": {
+        "type": "object",
+        "required": [
+          "title",
+          "genre",
+          "coverImage",
+          "file"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Book title",
+            "example": "The Monkey King"
+          },
+          "genre": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50,
+            "description": "Book genre/category",
+            "example": "Fiction"
+          },
+          "coverImage": {
+            "type": "string",
+            "format": "binary",
+            "description": "Book cover image (JPEG, PNG, WebP)"
+          },
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "description": "Book PDF file"
+          }
+        }
+      },
+      "CreateBookResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Book uploaded successfully"
+              },
+              "created_book_id": {
+                "type": "string",
+                "example": "67a7b8c9d1e2f3a4b5c6d7e8"
+              },
+              "cover_url": {
+                "type": "string",
+                "format": "uri",
+                "example": "https://cdn.example.com/covers/book.jpg"
+              },
+              "book_url": {
+                "type": "string",
+                "format": "uri",
+                "example": "https://cdn.example.com/books/book.pdf"
+              }
+            }
+          }
+        }
+      },
+      "GetBookResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "book": {
+                "$ref": "#/components/schemas/Book"
+              }
+            }
+          }
+        }
+      },
+      "GetBooksResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "books": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "status": {
+            "type": "integer",
+            "description": "HTTP status code",
+            "example": 400
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable error message",
+            "example": "Kindly provide all required fields"
+          }
+        }
+      }
+    }
+  },
+  "tags": []
+}
