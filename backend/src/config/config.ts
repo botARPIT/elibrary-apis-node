@@ -20,11 +20,16 @@ const _config = {
 
 
 }
-if (!_config.database_url) { throw new Error("MONGO_DATABASE_URL is required") }
-if (!_config.jwt_secret) { throw new Error("JWT_SECRET is required") }
-if (!_config.cloudinary.cloud) { throw new Error("CLOUDINARY_CLOUD is required") }
-if (!_config.cloudinary.api_key) { throw new Error("CLOUDINARY_API_KEY is required") }
-if (!_config.cloudinary.api_secret) { throw new Error("CLOUDINARY_API_SECRET is required") }
-if (!_config.redis_url) { throw new Error("REDIS_URL is required") }
+// Skip strict validation in test environment
+const isTest = process.env.NODE_ENV === 'test'
+
+if (!isTest) {
+    if (!_config.database_url) { throw new Error("MONGO_DATABASE_URL is required") }
+    if (!_config.jwt_secret) { throw new Error("JWT_SECRET is required") }
+    if (!_config.cloudinary.cloud) { throw new Error("CLOUDINARY_CLOUD is required") }
+    if (!_config.cloudinary.api_key) { throw new Error("CLOUDINARY_API_KEY is required") }
+    if (!_config.cloudinary.api_secret) { throw new Error("CLOUDINARY_API_SECRET is required") }
+    if (!_config.redis_url) { throw new Error("REDIS_URL is required") }
+}
 
 export const config = Object.freeze(_config) //Makes the file readonly
