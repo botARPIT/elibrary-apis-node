@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import { getFileUploadPath } from "../book/multerFileUpload";
+import { getFileUploadPath } from "../book/multerFileUpload.js";
 
 const fileUploadMiddleware = (
     req: Request,

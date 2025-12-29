@@ -31,18 +31,22 @@ app.use(cors(corsOptions))
 app.use(express.json())
 app.use(promMetrics)
 app.use(httpLogger)
+app.use(globalErrorHandler)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
     customCss: 'swagger-ui .topbar {display: none}',
     customSiteTitle: "E-library API Docs"
 }))
-
+app.use('/api/users', userRouter)
+app.use("/api/books", bookRouter)
+app.use(healthRouter)
 app.get('/api-docs.json', (req: Request, res: Response) => {
     res.setHeader('Content-Type', 'application/json')
     res.send(specs)
 })
-app.use('/api/users', userRouter)
-app.use("/api/books", bookRouter)
-app.use(healthRouter)
-app.use(globalErrorHandler)
 
+
+app.get("/metrics", async (req: Request, res: Response) => {
+    res.set("Content-Type", register.contentType)
+    res.set(await register.metrics())
+})
 export default app 

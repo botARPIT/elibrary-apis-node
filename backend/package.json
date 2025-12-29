@@ -6,9 +6,9 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon --exec tsx src/server.ts",
-    "start": "node dist/app.js",
+    "start": "node dist/server.js",
     "build": "tsc",
-    "preview": "node dist/app.js",
+    "preview": "node dist/server.js",
     "docs:generate": "tsx src/generateDocs.ts",
     "docs:watch": "nodemon --watch src --exec 'tsx scripts/generate-docs.ts'",
     "test": "vitest"

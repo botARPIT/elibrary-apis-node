@@ -34,7 +34,7 @@ jobs:
         run: npm ci
 
       - name: Run linter
-        run: npm run lint --if-present
+        run: npm run lint
 
       - name: Run type check
         run: npx tsc --noEmit
@@ -43,7 +43,7 @@ jobs:
         run: npm run test
         env:
           NODE_ENV: test
-          MONGO_DATABASE_URL: ${{ secrets.MONGO_DATABASE_URL_TEST }}
+          MONGO_DATABASE_URL: mongodb://localhost:27017/test
           REDIS_URL: redis://localhost:6379
           JWT_SECRET: test-secret-key-for-ci
           CLOUDINARY_CLOUD: test-cloud
