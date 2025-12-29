@@ -1,0 +1,68 @@
+name: Deploy Backend to Staging
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "backend/**"
+  workflow_dispatch:
+
+jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ---- BUILD ONCE ----
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build & push image (immutable)
+        run: |
+          IMAGE=${{ secrets.DOCKER_USERNAME }}/elibrary-api:${GITHUB_SHA}
+          docker build -t $IMAGE .
+          docker push $IMAGE
+
+      # ---- DEPLOY MANY (STAGING) ----
+      - name: Deploy to EC2 (staging)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            IMAGE=${{ secrets.DOCKER_USERNAME }}/elibrary-api:${GITHUB_SHA}
+
+            docker pull $IMAGE
+
+            docker stop elibrary-staging || true
+            docker rm elibrary-staging || true
+
+            docker run -d \
+              --name elibrary-staging \
+              --env-file /home/ubuntu/services/elib/.env \
+              -p 3001:3001 \
+              $IMAGE
+
+      # ---- VERIFY ----
+      - name: Health check
+        run: |
+          for i in {1..10}; do
+            if curl -fs http://${{ secrets.EC2_HOST }}:3001/health; then
+              exit 0
+            fi
+            sleep 5
+          done
+          exit 1
