@@ -1,0 +1,874 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "E-library API",
+    "version": "1.0.0",
+    "description": "API for mapping books with file uploads"
+  },
+  "paths": {
+    "/api/users/register": {
+      "post": {
+        "summary": "Register a new user",
+        "description": "Creates a new user in the system.",
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "User created"
+                    },
+                    "id": {
+                      "type": "string",
+                      "example": "90a7b8c9d1e2f3a4b5c6d7i0"
+                    },
+                    "accessToken": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User already exists / Invalid request payload"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/users/login": {
+      "post": {
+        "summary": "Authenticate a user",
+        "description": "Logs in a user and returns an access token.",
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "tester@mail.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "This is a testing pass"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Login successful"
+                    },
+                    "accessToken": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/books": {
+      "post": {
+        "summary": "Create a new book",
+        "description": "Upload a new book with cover image and PDF file",
+        "tags": [
+          "Books"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBookRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Book created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateBookResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get paginated list of books",
+        "description": "Retrieve books with pagination support",
+        "tags": [
+          "Books"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            },
+            "description": "Page number for pagination"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Books retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBooksResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid page number",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/books/{bookId}": {
+      "put": {
+        "summary": "Update an existing book",
+        "description": "Update book details and optionally replace files",
+        "tags": [
+          "Books"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "bookId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Book ID to update"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "genre": {
+                    "type": "string"
+                  },
+                  "coverImage": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Book updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "book": {
+                          "$ref": "#/components/schemas/Book"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get a book by ID",
+        "description": "Retrieve detailed information about a specific book",
+        "tags": [
+          "Books"
+        ],
+        "parameters": [
+          {
+            "name": "bookId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Book ID to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Book found successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBookResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid book ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Book not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a book",
+        "description": "Remove a book from the system (owner only)",
+        "tags": [
+          "Books"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "bookId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Book ID to delete"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Book deleted successfully"
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Unique user identifier",
+            "example": "90a7b8c9d1e2f3a4b5c6d7i0"
+          },
+          "name": {
+            "type": "string",
+            "description": "User name",
+            "example": "Tester"
+          },
+          "email": {
+            "type": "string",
+            "description": "Unique user email",
+            "example": "tester@mail.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "User password",
+            "example": "This is a testing pass"
+          }
+        }
+      },
+      "CreateUserRequest": {
+        "type": "object",
+        "required": [
+          "name",
+          "email",
+          "password"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 20,
+            "description": "User name",
+            "example": "Tester"
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "Unique user email",
+            "example": "tester@mail.com"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 70,
+            "description": "User password",
+            "example": "This is a testing pass"
+          }
+        }
+      },
+      "CreateUserResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "User created"
+          },
+          "id": {
+            "type": "string",
+            "description": "Newly created user ID",
+            "example": "90a7b8c9d1e2f3a4b5c6d7i0"
+          },
+          "accessToken": {
+            "type": "string",
+            "description": "JWT access token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          }
+        }
+      },
+      "LoginUserRequest": {
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User email",
+            "example": "tester@mail.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "User password",
+            "example": "This is a testing pass"
+          }
+        }
+      },
+      "LoginUserResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Login successful"
+          },
+          "accessToken": {
+            "type": "string",
+            "description": "JWT access token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          }
+        }
+      },
+      "UserErrorResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Invalid credentials"
+          }
+        }
+      },
+      "Book": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Unique book identifier",
+            "example": "67a7b8c9d1e2f3a4b5c6d7e8"
+          },
+          "title": {
+            "type": "string",
+            "description": "Book title",
+            "example": "The Monkey King"
+          },
+          "genre": {
+            "type": "string",
+            "description": "Book genre/category",
+            "example": "Fiction"
+          },
+          "author": {
+            "type": "string",
+            "description": "Author ID reference",
+            "example": "64a7b8c9d1e2f3a4b5c6d7e9"
+          },
+          "coverImage": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to book cover image",
+            "example": "https://cdn.example.com/covers/book.jpg"
+          },
+          "file": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to book PDF file",
+            "example": "https://cdn.example.com/books/book.pdf"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-15T10:30:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-07-15T10:30:00Z"
+          }
+        }
+      },
+      "Pagination": {
+        "type": "object",
+        "description": "Pagination metadata for paginated responses",
+        "properties": {
+          "currentPage": {
+            "type": "integer",
+            "description": "Current page number (1-based)",
+            "minimum": 1,
+            "example": 2
+          },
+          "totalPages": {
+            "type": "integer",
+            "description": "Total number of pages available",
+            "minimum": 0,
+            "example": 10
+          },
+          "totalBooks": {
+            "type": "integer",
+            "description": "Total number of books in the collection",
+            "minimum": 0,
+            "example": 95
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Whether there are more pages after the current page",
+            "example": true
+          },
+          "hasPreviousPage": {
+            "type": "boolean",
+            "description": "Whether there are pages before the current page",
+            "example": true
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of books per page",
+            "minimum": 1,
+            "maximum": 100,
+            "example": 10
+          }
+        }
+      },
+      "CreateBookRequest": {
+        "type": "object",
+        "required": [
+          "title",
+          "genre",
+          "coverImage",
+          "file"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Book title",
+            "example": "The Monkey King"
+          },
+          "genre": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50,
+            "description": "Book genre/category",
+            "example": "Fiction"
+          },
+          "coverImage": {
+            "type": "string",
+            "format": "binary",
+            "description": "Book cover image (JPEG, PNG, WebP)"
+          },
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "description": "Book PDF file"
+          }
+        }
+      },
+      "CreateBookResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Book uploaded successfully"
+              },
+              "created_book_id": {
+                "type": "string",
+                "example": "67a7b8c9d1e2f3a4b5c6d7e8"
+              },
+              "cover_url": {
+                "type": "string",
+                "format": "uri",
+                "example": "https://cdn.example.com/covers/book.jpg"
+              },
+              "book_url": {
+                "type": "string",
+                "format": "uri",
+                "example": "https://cdn.example.com/books/book.pdf"
+              }
+            }
+          }
+        }
+      },
+      "UpdateBookRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Updated book title",
+            "example": "Journey to the West"
+          },
+          "genre": {
+            "type": "string",
+            "description": "Updated book genre",
+            "example": "Adventure"
+          },
+          "coverImage": {
+            "type": "string",
+            "format": "binary",
+            "description": "New book cover image"
+          },
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "description": "New book PDF file"
+          }
+        }
+      },
+      "UpdateBookResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "book": {
+                "$ref": "#/components/schemas/Book"
+              }
+            }
+          }
+        }
+      },
+      "GetBookByIdRequest": {
+        "type": "object",
+        "properties": {
+          "bookId": {
+            "type": "string",
+            "description": "ID of the book to retrieve",
+            "example": "67a7b8c9d1e2f3a4b5c6d7e8"
+          }
+        }
+      },
+      "GetBookResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "book": {
+                "$ref": "#/components/schemas/Book"
+              }
+            }
+          }
+        }
+      },
+      "GetBooksRequest": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "Page number for pagination (1-based)",
+            "minimum": 1,
+            "default": 1,
+            "example": 2
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Number of books per page",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "example": 10
+          }
+        }
+      },
+      "GetBooksResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "books": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              },
+              "pagination": {
+                "$ref": "#/components/schemas/Pagination"
+              }
+            }
+          }
+        },
+        "example": {
+          "success": true,
+          "data": {
+            "books": [
+              {
+                "_id": "67a7b8c9d1e2f3a4b5c6d7e8",
+                "title": "The Monkey King",
+                "genre": "Fiction",
+                "author": "64a7b8c9d1e2f3a4b5c6d7e9",
+                "coverImage": "https://cdn.example.com/covers/book.jpg",
+                "file": "https://cdn.example.com/books/book.pdf",
+                "createdAt": "2023-07-15T10:30:00Z",
+                "updatedAt": "2023-07-15T10:30:00Z"
+              },
+              {
+                "_id": "67a7b8c9d1e2f3a4b5c6d7e9",
+                "title": "Journey to the West",
+                "genre": "Adventure",
+                "author": "64a7b8c9d1e2f3a4b5c6d7ea",
+                "coverImage": "https://cdn.example.com/covers/journey.jpg",
+                "file": "https://cdn.example.com/books/journey.pdf",
+                "createdAt": "2023-07-16T14:20:00Z",
+                "updatedAt": "2023-07-16T14:20:00Z"
+              }
+            ],
+            "pagination": {
+              "currentPage": 2,
+              "totalPages": 10,
+              "totalBooks": 95,
+              "hasNextPage": true,
+              "hasPreviousPage": true,
+              "limit": 10
+            }
+          }
+        }
+      },
+      "DeleteBookRequest": {
+        "type": "object",
+        "properties": {
+          "bookId": {
+            "type": "string",
+            "description": "ID of the book to delete",
+            "example": "67a7b8c9d1e2f3a4b5c6d7e8"
+          }
+        }
+      },
+      "DeleteBookResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Book deleted successfully"
+          }
+        }
+      },
+      "BookErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "status": {
+            "type": "integer",
+            "description": "HTTP status code",
+            "example": 400
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable error message",
+            "example": "Kindly provide all required fields"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Users",
+      "description": "User management APIs"
+    }
+  ]
+}
