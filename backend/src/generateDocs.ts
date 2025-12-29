@@ -5,7 +5,7 @@ async function main() {
         await generateSpecFiles()
         process.exit(0)
     } catch (error) {
-        console.error("Unable to generate spec file")
+        throw new Error(error as string)
         process.exit(1)
     }
 }

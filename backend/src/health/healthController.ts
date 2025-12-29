@@ -4,7 +4,7 @@ const getHealth = (req: Request, res: Response, next: NextFunction) => {
     try {
         res.status(200).json({ "message": "OK" })
     } catch (error) {
-        return next(createHttpError(500, "Unable to get server health"))
+        return next(createHttpError(500, error as string))
     }
 }
 

@@ -355,7 +355,7 @@ class BookService {
             )
             let newCoverImageUrl;
             let newBookUrl;
-            let currentBook = await this.findBook(bookId)
+            const currentBook = await this.findBook(bookId)
             if (currentBook === null) {
                 logger.warn(
                     {

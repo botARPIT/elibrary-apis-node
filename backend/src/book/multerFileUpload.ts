@@ -4,7 +4,6 @@ import { config } from "../config/config.js";
 import { getDirectoryName } from "../utils/getDirectoryName.js";
 import multer from 'multer'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 
 async function multerFileUpload(req: Request) {
     const files = req.files as fileUploadType | undefined

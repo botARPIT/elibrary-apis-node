@@ -26,7 +26,7 @@ export const logger = pino({
 //middleware for logging incoming http request
 export const httpLogger = pinoHttp({
     logger,
-    genReqId: function (req: Request, res: Response) {
+    genReqId: function (req: Request) {
         return req.headers["x-request-id"]?.toString() || randomUUID()
     },
     serializers: {

@@ -1,15 +1,15 @@
-import express, { type ErrorRequestHandler, type NextFunction, type Request, type Response } from 'express'
+
 import cors from 'cors'
 import globalErrorHandler from './middlewares/globalErrorHandler.js'
 import userRouter from './user/userRouter.js'
 import { bookRouter } from './book/bookRouter.js'
-
-import { swaggerUi, specs, generateSpecFiles } from './swagger.js'
+import express from 'express'
+import { swaggerUi, specs } from './swagger.js'
 import { httpLogger } from './utils/logger.js'
 import { promMetrics } from './middlewares/prometheusMetrics.js'
 import { register } from 'prom-client'
 import { healthRouter } from './health/healthRouter.js'
-
+import type {Response} from 'express'
 
 const app = express()
 
@@ -31,7 +31,7 @@ app.use(cors(corsOptions))
 app.use(express.json())
 app.use(promMetrics)
 app.use(httpLogger)
-app.use(globalErrorHandler)
+
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
     customCss: 'swagger-ui .topbar {display: none}',
     customSiteTitle: "E-library API Docs"
@@ -39,14 +39,16 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
 app.use('/api/users', userRouter)
 app.use("/api/books", bookRouter)
 app.use(healthRouter)
-app.get('/api-docs.json', (req: Request, res: Response) => {
+app.get('/api-docs.json', ( res: Response) => {
     res.setHeader('Content-Type', 'application/json')
     res.send(specs)
 })
+ 
 
-
-app.get("/metrics", async (req: Request, res: Response) => {
+app.get("/metrics", async ( res: Response) => {
     res.set("Content-Type", register.contentType)
     res.set(await register.metrics())
 })
+
+app.use(globalErrorHandler)
 export default app 

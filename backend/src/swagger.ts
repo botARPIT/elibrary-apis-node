@@ -39,6 +39,7 @@ export const generateSpecFiles = async () => {
 
 
     } catch (error) {
+        throw Error(error as string)
         console.error('Error generating open-api spec file')
     }
 }

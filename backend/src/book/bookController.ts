@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import * as fs from 'node:fs/promises'
-import { bookIdSchema, createBookSchema, updateBookSchema, type fileUploadType, type GetBookDTO, type UpdateCoverImageMetaData } from "./bookTypes.js";
+import { bookIdSchema, createBookSchema, updateBookSchema, type fileUploadType, type UpdateCoverImageMetaData } from "./bookTypes.js";
 import createHttpError from "http-errors";
 import { bookService } from "./bookService.js";
 import type { AuthRequest } from "../middlewares/authenticator.js";
@@ -765,7 +765,7 @@ const getBooks = async (
 ) => {
     try {
         const requestId = req.id.toString()
-        let pageNumber = Number(req.query.page ?? 1)
+        const pageNumber = Number(req.query.page ?? 1)
         req.log.info(
             { pageNumber: pageNumber },
             "Incoming request for getBooks endpoint"
@@ -834,7 +834,7 @@ const getBooks = async (
         })
     } catch (error) {
         if (error instanceof Error) {
-            let pageNumber = req.query.page
+            const pageNumber = req.query.page
             req.log.error({
                 pageNumber: pageNumber,
                 error: error,
