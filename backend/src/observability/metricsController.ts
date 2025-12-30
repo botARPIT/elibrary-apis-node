@@ -5,7 +5,7 @@ const getMetric = async (
     res: Response,
 ) => {
     try {
-        res.set('Content-Type', register.contentType)
+        res.setHeader('Content-Type', register.contentType)
         const metrics = await register.metrics();
         res.end(metrics)
     } catch (error) {
@@ -13,4 +13,4 @@ const getMetric = async (
     }
 }
 
-export { getMetric }
+export { getMetric } 
