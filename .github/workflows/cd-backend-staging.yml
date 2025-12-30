@@ -32,8 +32,14 @@ jobs:
       - name: Build & push image (immutable)
         run: |
           IMAGE=${{ secrets.DOCKER_USERNAME }}/elibrary-api:${GITHUB_SHA}
-          docker build -t $IMAGE .
-          docker push $IMAGE
+          docker build \
+          -t $IMAGE:${GITHUB_SHA} \
+          -t $IMAGE:staging \
+          .
+
+          docker push $IMAGE:${GITHUB_SHA}
+          docker push $IMAGE:staging
+
 
       # ---- DEPLOY MANY (STAGING) ----
       - name: Deploy to EC2 (staging)
@@ -47,14 +53,8 @@ jobs:
 
             docker pull $IMAGE
 
-            docker stop elibrary-staging || true
-            docker rm elibrary-staging || true
-
-            docker run -d \
-              --name elibrary-staging \
-              --env-file /home/ubuntu/services/elib/.env \
-              -p 3001:3001 \
-              $IMAGE
+            docker compose pull
+            docker compose up -d
 
       # ---- VERIFY ----
       - name: Health check
