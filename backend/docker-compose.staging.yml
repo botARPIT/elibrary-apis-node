@@ -1,8 +1,8 @@
 version: "3.9"
 services:
   elib:
-    image: iarpitchauhan/elib-api:staging
-    container_name: elib-api
+    image: iarpitchauhan/elibrary-api:staging
+    container_name: elibrary-api
     restart: unless-stopped
     ports:
       - "3001:3001"
@@ -31,7 +31,7 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./prometheus/prometheus.yml:etc/prometheus/prometheus.ym:ro
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus-data:/prometheus
     networks:
       - elib-net
