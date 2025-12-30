@@ -48,12 +48,12 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            IMAGE=${{ secrets.DOCKER_USERNAME }}/elibrary-api:${GITHUB_SHA}
+            set -e
+            cd /home/ec2-user/elib-backend
 
-            docker pull $IMAGE
-
-            docker compose pull
-            docker compose up -d
+            docker compose -f docker-compose.staging.yml pull
+            docker compose -f docker-compose.staging.yml -d
+            docker image prune -f
 
       # ---- VERIFY ----
       - name: Health check
