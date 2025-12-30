@@ -31,7 +31,7 @@ jobs:
 
       - name: Build & push image (immutable)
         run: |
-          IMAGE=iarpitchauhan/elibrary-api:${GITHUB_SHA}
+          IMAGE=iarpitchauhan/elibrary-api
           docker build \
           -t $IMAGE:${GITHUB_SHA} \
           -t $IMAGE:staging \
@@ -39,7 +39,6 @@ jobs:
 
           docker push $IMAGE:${GITHUB_SHA}
           docker push $IMAGE:staging
-
 
       # ---- DEPLOY MANY (STAGING) ----
       - name: Deploy to EC2 (staging)
