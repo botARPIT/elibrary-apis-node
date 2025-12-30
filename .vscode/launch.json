@@ -9,7 +9,8 @@
       "request": "launch",
       "name": "Launch Program",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}/src/user/userService.ts",
+      "program": "${workspaceFolder}/src/server.ts",
+      "cwd": "${workspaceFolder}",
       "outFiles": ["${workspaceFolder}/**/*.js"]
     }
   ]
