@@ -52,7 +52,7 @@ jobs:
             cd /home/ec2-user/elib-backend
 
             docker compose -f docker-compose.staging.yml pull
-            docker compose -f docker-compose.staging.yml -d
+            docker compose -f docker-compose.staging.yml up -d
             docker image prune -f
 
       # ---- VERIFY ----
