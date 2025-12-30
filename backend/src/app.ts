@@ -7,7 +7,7 @@ import express from 'express'
 import { swaggerUi, specs } from './swagger.js'
 import { httpLogger } from './utils/logger.js'
 import { promMetrics } from './middlewares/prometheusMetrics.js'
-import { register } from 'prom-client'
+import {metricRouter} from "./observability/metricsRouter.js"
 import { healthRouter } from './health/healthRouter.js'
 import type {Response} from 'express'
 
@@ -45,10 +45,7 @@ app.get('/api-docs.json', ( res: Response) => {
 })
  
 
-app.get("/metrics", async ( res: Response) => {
-    res.set("Content-Type", register.contentType)
-    res.set(await register.metrics())
-})
+app.get("/metrics", metricRouter)
 
 app.use(globalErrorHandler)
 export default app 
