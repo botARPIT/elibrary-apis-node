@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="E-Library - Discover, read, and share your favorite books. Join our community of readers and writers." />
+    <meta name="keywords" content="ebooks, library, reading, books, digital library, pdf books" />
+    <meta name="author" content="E-Library" />
+    <meta name="theme-color" content="#8b5cf6" />
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="E-Library - Discover Your Next Favorite Book" />
+    <meta property="og:description" content="Explore a world of stories, knowledge, and imagination. Join our community of readers and writers." />
+    <meta property="og:site_name" content="E-Library" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="E-Library - Discover Your Next Favorite Book" />
+    <meta name="twitter:description" content="Explore a world of stories, knowledge, and imagination." />
+    
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+    
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self';
+      script-src 'self';
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      font-src 'self' https://fonts.gstatic.com;
+      img-src 'self' data: https: blob:;
+      connect-src 'self' http://localhost:* https://localhost:* https://res.cloudinary.com;
+      frame-ancestors 'self';
+      base-uri 'self';
+      form-action 'self';
+    " />
+    
+    <!-- Permissions Policy -->
+    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()" />
+    
+    <title>E-Library - Discover Your Next Favorite Book</title>
+  </head>
+  <body>
+    <noscript>
+      <div style="padding: 2rem; text-align: center;">
+        <h1>JavaScript Required</h1>
+        <p>Please enable JavaScript to use E-Library.</p>
+      </div>
+    </noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
