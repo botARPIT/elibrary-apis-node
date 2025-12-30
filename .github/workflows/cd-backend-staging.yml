@@ -31,7 +31,7 @@ jobs:
 
       - name: Build & push image (immutable)
         run: |
-          IMAGE=${{ secrets.DOCKER_USERNAME }}/elibrary-api:${GITHUB_SHA}
+          IMAGE=iarpitchauhan/elibrary-api:${GITHUB_SHA}
           docker build \
           -t $IMAGE:${GITHUB_SHA} \
           -t $IMAGE:staging \
