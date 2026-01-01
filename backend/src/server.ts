@@ -10,7 +10,7 @@ const startServer = async () => {
         await connectDB()
         await initializeRedis()
         const port = config.port
-        const server = app.listen(port, '0.0.0.0', () => {
+        const server = app.listen(port, '127.0.0.1', () => {
             logger.info(`Server running on port ${port}`)
         })
 
