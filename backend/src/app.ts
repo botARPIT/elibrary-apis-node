@@ -9,7 +9,7 @@ import { httpLogger } from './utils/logger.js'
 import { promMetrics } from './middlewares/prometheusMetrics.js'
 import { metricRouter } from "./observability/metricsRouter.js"
 import { healthRouter } from './health/healthRouter.js'
-import type { Response } from 'express'
+import type { Request, Response } from 'express'
 
 
 const app = express()
@@ -42,7 +42,7 @@ app.get('/api-docs.json', (res: Response) => {
 })
 
 // Middleware to handle unknown routes
-app.use((req, res, next) => {
+app.use((req: Request, res: Response) => {
     res.status(404).json({ message: 'Not Found' })
 })
 
