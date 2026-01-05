@@ -4,6 +4,11 @@ import fs from 'node:fs/promises'
 import path from "node:path";
 import * as yaml from 'js-yaml'
 
+// In production, use compiled JS files; in development, use source TS files
+const isProduction = process.env.NODE_ENV === 'production'
+const fileExtension = isProduction ? 'js' : 'ts'
+const basePath = isProduction ? 'dist' : 'src'
+
 const options = {
     definition: {
         openapi: '3.0.0',
@@ -15,7 +20,8 @@ const options = {
     },
 
     apis: [
-        'src/user/userController.ts', 'src/book/bookController.ts'
+        `${basePath}/user/userController.${fileExtension}`,
+        `${basePath}/book/bookController.${fileExtension}`
     ],
 }
 
@@ -40,6 +46,6 @@ export const generateSpecFiles = async () => {
 
     } catch (error) {
         throw Error(error as string)
-        console.error('Error generating open-api spec file')
+
     }
 }
