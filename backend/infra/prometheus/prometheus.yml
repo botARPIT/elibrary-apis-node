@@ -1,11 +1,12 @@
 global:
-  scrape_interval: 10s
+  scrape_interval: 15s
+ 
 
 scrape_configs:
   - job_name: "elib-api"
     static_configs:
       - targets: ["elib:3001"]
-    scrape_interval: 5s
+    scrape_interval: 15s
     metrics_path: /metrics
   - job_name: "node-exporter"
     static_configs:

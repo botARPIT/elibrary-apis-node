@@ -5,7 +5,7 @@ services:
     container_name: elibrary-api
     restart: unless-stopped
     ports:
-      - "3001:3001"
+      - "127.0.0.1:3001:3001"
     env_file:
       - .env.staging
     depends_on:
@@ -18,7 +18,7 @@ services:
     container_name: elib-redis
     restart: unless-stopped
     ports:
-      - "6179:6179"
+      - "127.0.0.1:6179:6179"
     volumes:
       - redis-data:/data
     networks:
@@ -29,10 +29,14 @@ services:
     container_name: elib-prometheus
     restart: unless-stopped
     ports:
-      - "9090:9090"
+      - "127.0.0.1:9090:9090"
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus-data:/prometheus
+    deploy:
+      resources:
+        limits:
+          memory: 512M
     networks:
       - elib-net
 
@@ -41,7 +45,7 @@ services:
     container_name: elib-grafana
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     volumes:
       - grafana-data:/var/lib/grafana
     environment:
