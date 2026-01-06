@@ -59,7 +59,7 @@ jobs:
       - name: Health check
         run: |
           for i in {1..10}; do
-            if curl -fs http://${{ secrets.EC2_HOST }}/health; then
+            if curl -fs http://${{ secrets.BACKEND_API_URL }}/health; then
               exit 0
             fi
             sleep 5
