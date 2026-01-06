@@ -17,7 +17,10 @@ const app = express()
 // CORS configuration - allow frontend origins
 const corsOptions = {
     origin: [
-        'http://localhost:3001'
+        'http://localhost:5173',    // Vite dev server
+        'http://127.0.0.1:5173',
+        'http://localhost:3000',    // Alternative React dev server
+        'http://127.0.0.1:3000',
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
@@ -41,13 +44,12 @@ app.get('/api-docs.json', (res: Response) => {
     res.send(specs)
 })
 
+app.get("/metrics", metricRouter)
+
 // Middleware to handle unknown routes
 app.use((req: Request, res: Response) => {
     res.status(404).json({ message: 'Not Found' })
 })
-
-app.get("/metrics", metricRouter)
-
 
 app.use(globalErrorHandler)
 export default app 
