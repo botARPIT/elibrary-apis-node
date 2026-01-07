@@ -6,3 +6,4 @@ export { Pagination } from './Pagination';
 export { FileUpload } from './FileUpload';
 export { ProtectedRoute } from './ProtectedRoute';
 export { ErrorBoundary } from './ErrorBoundary';
+export { UserAvatar } from './UserAvatar';

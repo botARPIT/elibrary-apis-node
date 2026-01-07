@@ -4,7 +4,15 @@ import { Home, Search } from 'lucide-react';
 
 export function NotFoundPage() {
   return (
-    <main className="container" style={{ minHeight: 'calc(100vh - 80px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <main
+      className="container"
+      style={{
+        minHeight: 'calc(100vh - 80px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -30,7 +38,13 @@ export function NotFoundPage() {
           Page Not Found
         </h1>
 
-        <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--space-8)', fontSize: 'var(--text-lg)' }}>
+        <p
+          style={{
+            color: 'var(--color-text-muted)',
+            marginBottom: 'var(--space-8)',
+            fontSize: 'var(--text-lg)',
+          }}
+        >
           Oops! The page you're looking for doesn't exist or has been moved.
         </p>
 

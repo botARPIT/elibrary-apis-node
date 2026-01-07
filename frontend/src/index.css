@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* ================================================
    E-Library Design System
    "Modern Teal" Theme with Dark Mode Support
@@ -1168,10 +1172,11 @@ p {
   width: 100%;
   max-width: 420px;
   padding: var(--space-8);
-  background: rgba(30, 41, 59, 0.6);
+  background: var(--color-surface-elevated);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-3xl);
   backdrop-filter: blur(20px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
 }
 
 .auth-header {
