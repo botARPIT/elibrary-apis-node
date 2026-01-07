@@ -3,13 +3,13 @@
  * This prevents exposing CDN URLs directly to clients
  */
 
+import config from '../config';
+
 /**
  * Get the API base URL for proxy requests
  */
 const getApiBase = (): string => {
-  // In development, use relative path (Vite proxy handles it)
-  // In production, this would be the actual API URL
-  return '/api';
+  return config.api.baseUrl;
 };
 
 /**
