@@ -1,0 +1,27 @@
+{
+    "name": "E-Library",
+    "short_name": "eLib",
+    "description": "Discover and share your favorite books",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#14b8a6",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "/elib-favicon.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": [
+        "books",
+        "education",
+        "entertainment"
+    ],
+    "lang": "en",
+    "dir": "ltr",
+    "scope": "/",
+    "prefer_related_applications": false
+}
