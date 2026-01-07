@@ -138,8 +138,7 @@ export function HomePage() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    background:
-                      'linear-gradient(135deg, var(--color-primary-600), var(--color-secondary-600))',
+                    background: '#14b8a6',
                     borderRadius: 'var(--radius-xl)',
                   }}
                   whileHover={{ rotate: 10, scale: 1.1 }}
@@ -205,14 +204,12 @@ export function HomePage() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                background:
-                  'linear-gradient(135deg, var(--color-primary-500), var(--color-secondary-500))',
+                background: '#14b8a6',
                 borderRadius: 'var(--radius-md)',
               }}
             >
               <BookOpen size={16} color="white" />
             </div>
-            <span style={{ fontWeight: 600 }}>E-Library</span>
           </div>
           <p style={{ margin: 0, fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)' }}>
             © {new Date().getFullYear()} E-Library. All rights reserved.
