@@ -2,67 +2,19 @@
  * Application Configuration
  *
  * This module provides a centralized, type-safe configuration system for the application.
- * All environment variables and runtime configuration should be accessed through this module.
+ * All environment variables are accessed directly via import.meta.env for better compatibility
+ * with deployment platforms like Vercel, Netlify, etc.
  *
- * Environment Variables:
- * - VITE_API_URL: Backend API base URL (optional, defaults to proxy in dev)
+ * Environment Variables (all must be prefixed with VITE_):
+ * - VITE_API_URL: Backend API base URL (defaults to '/api' for Vite proxy in dev)
  * - VITE_APP_NAME: Application name
  * - VITE_APP_VERSION: Application version
  * - VITE_ENABLE_ANALYTICS: Enable analytics tracking
+ * - VITE_ENABLE_DEBUG: Enable debug mode
  * - VITE_LOG_LEVEL: Logging level (debug, info, warn, error)
  *
  * @module config
  */
-
-// ============================================================================
-// Environment Variable Helpers
-// ============================================================================
-
-/**
- * Safely get an environment variable with type safety
- */
-function getEnvVar(key: string, defaultValue?: string): string {
-  const value = import.meta.env[key];
-  if (value === undefined && defaultValue === undefined) {
-    console.warn(`Environment variable ${key} is not defined and has no default value`);
-    return '';
-  }
-  return value ?? defaultValue ?? '';
-}
-
-/**
- * Get a required environment variable or throw an error
- */
-function getRequiredEnvVar(key: string): string {
-  const value = import.meta.env[key];
-  if (value === undefined || value === '') {
-    throw new Error(`Required environment variable ${key} is not defined`);
-  }
-  return value;
-}
-
-/**
- * Get a boolean environment variable
- */
-function getBooleanEnvVar(key: string, defaultValue = false): boolean {
-  const value = import.meta.env[key];
-  if (value === undefined) {
-    return defaultValue;
-  }
-  return value === 'true' || value === '1' || value === 'yes';
-}
-
-/**
- * Get a number environment variable
- */
-function getNumberEnvVar(key: string, defaultValue: number): number {
-  const value = import.meta.env[key];
-  if (value === undefined) {
-    return defaultValue;
-  }
-  const parsed = parseInt(value, 10);
-  return isNaN(parsed) ? defaultValue : parsed;
-}
 
 // ============================================================================
 // Configuration Object
@@ -71,15 +23,21 @@ function getNumberEnvVar(key: string, defaultValue: number): number {
 /**
  * Application configuration
  * All configuration values should be accessed through this object
+ *
+ * Example usage:
+ * ```typescript
+ * import config from '@/config';
+ * const apiUrl = config.api.baseUrl;
+ * ```
  */
 export const config = {
   /**
    * Application metadata
    */
   app: {
-    name: getEnvVar('VITE_APP_NAME', 'E-Library'),
-    version: getEnvVar('VITE_APP_VERSION', '1.0.0'),
-    description: getEnvVar('VITE_APP_DESCRIPTION', 'Digital Library Management System'),
+    name: import.meta.env.VITE_APP_NAME || 'E-Library',
+    version: import.meta.env.VITE_APP_VERSION || '1.0.0',
+    description: import.meta.env.VITE_APP_DESCRIPTION || 'Digital Library Management System',
   },
 
   /**
@@ -88,22 +46,28 @@ export const config = {
   api: {
     /**
      * Base URL for API requests
-     * In development, defaults to '/api' to use Vite proxy
-     * In production, should be set via VITE_API_URL environment variable
+     *
+     * Development: Defaults to '/api' to use Vite proxy
+     * Production: Set via VITE_API_URL environment variable
+     *
+     * Examples:
+     * - Local dev: '/api' (proxied to localhost:3001)
+     * - Production: 'https://api.elibrary.com'
+     * - Staging: 'https://staging-api.elibrary.com'
      */
-    baseUrl: getEnvVar('VITE_API_URL', '/api'),
+    baseUrl: import.meta.env.VITE_API_URL || '/api',
 
     /**
      * Request timeout in milliseconds
      */
-    timeout: getNumberEnvVar('VITE_API_TIMEOUT', 30000),
+    timeout: Number(import.meta.env.VITE_API_TIMEOUT) || 30000,
 
     /**
      * Retry configuration
      */
     retry: {
-      maxRetries: getNumberEnvVar('VITE_API_MAX_RETRIES', 3),
-      retryDelay: getNumberEnvVar('VITE_API_RETRY_DELAY', 1000),
+      maxRetries: Number(import.meta.env.VITE_API_MAX_RETRIES) || 3,
+      retryDelay: Number(import.meta.env.VITE_API_RETRY_DELAY) || 1000,
     },
   },
 
@@ -114,17 +78,17 @@ export const config = {
     /**
      * Local storage key for authentication token
      */
-    tokenKey: getEnvVar('VITE_AUTH_TOKEN_KEY', 'elibrary_access_token'),
+    tokenKey: import.meta.env.VITE_AUTH_TOKEN_KEY || 'elibrary_access_token',
 
     /**
      * Token refresh interval in milliseconds
      */
-    tokenCheckInterval: getNumberEnvVar('VITE_AUTH_TOKEN_CHECK_INTERVAL', 60000),
+    tokenCheckInterval: Number(import.meta.env.VITE_AUTH_TOKEN_CHECK_INTERVAL) || 60000,
 
     /**
      * Token expiration buffer in seconds
      */
-    tokenExpirationBuffer: getNumberEnvVar('VITE_AUTH_TOKEN_BUFFER', 60),
+    tokenExpirationBuffer: Number(import.meta.env.VITE_AUTH_TOKEN_BUFFER) || 60,
   },
 
   /**
@@ -134,17 +98,18 @@ export const config = {
     /**
      * Enable analytics tracking
      */
-    analytics: getBooleanEnvVar('VITE_ENABLE_ANALYTICS', false),
+    analytics: import.meta.env.VITE_ENABLE_ANALYTICS === 'true',
 
     /**
      * Enable service worker for offline support
      */
-    serviceWorker: getBooleanEnvVar('VITE_ENABLE_SERVICE_WORKER', false),
+    serviceWorker: import.meta.env.VITE_ENABLE_SERVICE_WORKER === 'true',
 
     /**
      * Enable debug mode
+     * Defaults to true in development, false in production
      */
-    debug: getBooleanEnvVar('VITE_ENABLE_DEBUG', import.meta.env.DEV),
+    debug: import.meta.env.VITE_ENABLE_DEBUG === 'true' || import.meta.env.DEV,
   },
 
   /**
@@ -154,7 +119,7 @@ export const config = {
     /**
      * Log level: 'debug' | 'info' | 'warn' | 'error'
      */
-    level: getEnvVar('VITE_LOG_LEVEL', import.meta.env.DEV ? 'debug' : 'warn') as
+    level: (import.meta.env.VITE_LOG_LEVEL || (import.meta.env.DEV ? 'debug' : 'warn')) as
       | 'debug'
       | 'info'
       | 'warn'
@@ -163,7 +128,7 @@ export const config = {
     /**
      * Enable console logging
      */
-    enabled: getBooleanEnvVar('VITE_ENABLE_LOGGING', true),
+    enabled: import.meta.env.VITE_ENABLE_LOGGING !== 'false',
   },
 
   /**
@@ -173,12 +138,12 @@ export const config = {
     /**
      * Maximum file size in bytes (default: 10MB)
      */
-    maxFileSize: getNumberEnvVar('VITE_MAX_FILE_SIZE', 10 * 1024 * 1024),
+    maxFileSize: Number(import.meta.env.VITE_MAX_FILE_SIZE) || 10 * 1024 * 1024,
 
     /**
      * Maximum cover image size in bytes (default: 5MB)
      */
-    maxCoverSize: getNumberEnvVar('VITE_MAX_COVER_SIZE', 5 * 1024 * 1024),
+    maxCoverSize: Number(import.meta.env.VITE_MAX_COVER_SIZE) || 5 * 1024 * 1024,
 
     /**
      * Accepted file types for books
@@ -198,7 +163,7 @@ export const config = {
     /**
      * Default page size
      */
-    defaultPageSize: getNumberEnvVar('VITE_PAGINATION_PAGE_SIZE', 10),
+    defaultPageSize: Number(import.meta.env.VITE_PAGINATION_PAGE_SIZE) || 10,
 
     /**
      * Available page size options
@@ -253,7 +218,7 @@ export function validateConfig(): void {
     errors.push('Max retries must be non-negative');
   }
 
-  // Log warnings for development
+  // Log configuration in development
   if (config.env.isDev) {
     // eslint-disable-next-line no-console
     console.group('🔧 Configuration');
@@ -283,15 +248,11 @@ export function validateConfig(): void {
 
 /**
  * Export configuration as default
+ *
+ * Usage:
+ * ```typescript
+ * import config from '@/config';
+ * console.log(config.api.baseUrl);
+ * ```
  */
 export default config;
-
-/**
- * Type-safe access to environment variables
- */
-export const env = {
-  get: getEnvVar,
-  getRequired: getRequiredEnvVar,
-  getBoolean: getBooleanEnvVar,
-  getNumber: getNumberEnvVar,
-};
