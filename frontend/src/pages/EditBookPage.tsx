@@ -5,8 +5,9 @@ import { ArrowLeft, Save, BookOpen, Sparkles, ExternalLink } from 'lucide-react'
 import { FileUpload, Toast } from '../components';
 import { booksApi } from '../services/api';
 import { BookGenre, type Book, type ApiError } from '../types';
-import { validateBookTitle, sanitizeErrorMessage, isValidImageUrl } from '../utils/validation';
+import { validateBookTitle, sanitizeErrorMessage } from '../utils/validation';
 import { useRateLimiter } from '../hooks/useRateLimiter';
+import { getProxiedCoverUrl, getProxiedFileUrl } from '../utils/proxyUrl';
 
 export function EditBookPage() {
   const { bookId } = useParams<{ bookId: string }>();
@@ -130,27 +131,33 @@ export function EditBookPage() {
     }
   };
 
-  // Get safe URL for display
-  const getSafeUrl = (url: string, label: string): React.ReactNode => {
-    if (isValidImageUrl(url) || url.startsWith('http')) {
-      return (
-        <a
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            color: 'var(--color-primary-400)',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '4px',
-          }}
-        >
-          {label}
-          <ExternalLink size={12} aria-hidden="true" />
-        </a>
-      );
+  // Get safe proxy URL for display
+  const getSafeUrl = (url: string, label: string, type: 'image' | 'pdf'): React.ReactNode => {
+    if (!url) {
+      return <span style={{ color: 'var(--color-text-muted)' }}>No file</span>;
     }
-    return <span style={{ color: 'var(--color-text-muted)' }}>{label}</span>;
+
+    // Use proxy URL to mask Cloudinary URLs
+    const proxyUrl = type === 'image' 
+      ? getProxiedCoverUrl(url, bookId)
+      : getProxiedFileUrl(url, bookId);
+
+    return (
+      <a
+        href={proxyUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          color: 'var(--color-primary-400)',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '4px',
+        }}
+      >
+        {label}
+        <ExternalLink size={12} aria-hidden="true" />
+      </a>
+    );
   };
 
   if (isLoading) {
@@ -333,7 +340,7 @@ export function EditBookPage() {
                     margin: 0,
                   }}
                 >
-                  Current cover: {getSafeUrl(book.coverImage, 'View Image')}
+                  Current cover: {getSafeUrl(book.coverImage, 'View Image', 'image')}
                 </p>
               </div>
 
@@ -361,7 +368,7 @@ export function EditBookPage() {
                     margin: 0,
                   }}
                 >
-                  Current file: {getSafeUrl(book.file, 'View PDF')}
+                  Current file: {getSafeUrl(book.file, 'View PDF', 'pdf')}
                 </p>
               </div>
 
