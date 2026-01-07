@@ -9,7 +9,11 @@ class UserService {
         const hashedPassword = await hashPassword(dto.password)
         const user = new User({ name: dto.name, email: dto.email, password: hashedPassword });
         const createdUser = await user.save()
-        const token = createJWT({ id: String(createdUser._id) })
+        const token = createJWT({
+            id: String(createdUser._id),
+            name: createdUser.name,
+            email: createdUser.email
+        })
         logger.debug({ userId: createdUser._id }, "User created")
         return { createdUser, token }
     }

@@ -24,6 +24,8 @@ export type userRegisterDTO = z.infer<typeof userRegisterSchema>
 export type userLoginDTO = Pick<userRegisterDTO, "email" | "password">
 export type userJWTPayload = {
     id: string
+    name: string
+    email: string
 }
 
 export type UserDTO = User

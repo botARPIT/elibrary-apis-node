@@ -525,7 +525,7 @@ const updateBook = async (
         const { title, genre } = req.body
 
 
-        const parsedInput = updateBookSchema.safeParse({ title, authorId, genre })
+        const parsedInput = updateBookSchema.safeParse({ title, author: authorId, genre })
         if (!parsedInput.success) {
             req.log.error(
                 { title: title, genre: genre, userId: authorId, issues: parsedInput.error.issues },
