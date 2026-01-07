@@ -265,8 +265,7 @@ export function BookDetailPage() {
           <div className="book-detail-actions">
             <motion.a
               href={isValidUrl(book.file) ? getProxiedFileUrl(book.file, bookId) : '#'}
-              target="_blank"
-              rel="noopener noreferrer"
+              download={book.title + '.pdf'}
               className={`btn btn-primary btn-lg ${!isValidUrl(book.file) ? 'disabled' : ''}`}
               whileHover={isValidUrl(book.file) ? { scale: 1.05 } : {}}
               whileTap={isValidUrl(book.file) ? { scale: 0.95 } : {}}
