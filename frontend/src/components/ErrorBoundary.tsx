@@ -1,5 +1,6 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
 import { Home, RefreshCw, AlertTriangle } from 'lucide-react';
+import { logger, trackError } from '../utils/logger';
 
 interface Props {
   children: ReactNode;
@@ -31,13 +32,13 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    // Log error to console in development
-    console.error('Error Boundary caught an error:', error, errorInfo);
+    // Log error to console in development only
+    logger.error('Error Boundary caught an error:', error, errorInfo);
 
     this.setState({ errorInfo });
 
-    // In production, you would send this to an error tracking service like Sentry
-    // Example: Sentry.captureException(error, { extra: errorInfo });
+    // Track error in production (e.g., Sentry)
+    trackError(error, { componentStack: errorInfo.componentStack });
   }
 
   handleReload = (): void => {

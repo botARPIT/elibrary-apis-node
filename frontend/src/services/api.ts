@@ -9,6 +9,7 @@ import type {
   ApiError,
 } from '../types';
 import { sanitizeErrorMessage } from '../utils/validation';
+import { logger } from '../utils/logger';
 import config from '../config';
 
 // ============================================================================
@@ -52,7 +53,7 @@ export const removeToken = (): void => {
     localStorage.removeItem(TOKEN_KEY);
     sessionStorage.removeItem(TOKEN_KEY);
   } catch (error) {
-    console.error('Failed to remove token:', error);
+    logger.error('Failed to remove token:', error);
   }
 };
 
@@ -112,9 +113,10 @@ apiClient.interceptors.response.use(
       // Server responded with error status
       apiError.status = error.response.status;
 
-      // Extract error message from response
+      // Extract error message from response and ALWAYS sanitize
       const errorData = error.response.data as { message?: string };
-      apiError.message = errorData?.message || error.message || 'An error occurred';
+      const rawMessage = errorData?.message || error.message || 'An error occurred';
+      apiError.message = sanitizeErrorMessage(new Error(rawMessage));
 
       // Handle 401 Unauthorized - token expired
       if (error.response.status === 401) {
