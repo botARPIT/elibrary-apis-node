@@ -80,7 +80,34 @@ function getFileUploadPath() {
         const __dirname = path.resolve(config.file_upload_directory)
         fileUploadPath = multer({
             dest: __dirname,
-            limits: { fileSize: config.max_file_size }
+            limits: {
+                fileSize: config.max_file_size,
+                files: 2 // Max 2 files (coverImage + PDF)
+            },
+            fileFilter: (req, file, cb) => {
+                // Validate cover image
+                if (file.fieldname === 'coverImage') {
+                    const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+                    if (allowedImageTypes.includes(file.mimetype)) {
+                        cb(null, true)
+                    } else {
+                        logger.warn({ mimetype: file.mimetype }, 'Invalid cover image type')
+                        cb(new Error(`Invalid cover image format. Allowed: JPEG, PNG, WebP. Got: ${file.mimetype}`))
+                    }
+                }
+                // Validate PDF file
+                else if (file.fieldname === 'file') {
+                    if (file.mimetype === 'application/pdf') {
+                        cb(null, true)
+                    } else {
+                        logger.warn({ mimetype: file.mimetype }, 'Invalid book file type')
+                        cb(new Error(`Invalid book file format. Only PDF allowed. Got: ${file.mimetype}`))
+                    }
+                }
+                else {
+                    cb(new Error('Unknown file field'))
+                }
+            }
         })
     }
     logger.debug("File upload path initialized")
