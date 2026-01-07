@@ -1,5 +1,6 @@
 import cloudinary from "../config/cloudinary.js"
 import { generatePublicId } from "../utils/generatePublicId.js"
+import { logger } from "../utils/logger.js"
 
 class CloudinaryService {
     async uploadBookCover(
@@ -38,11 +39,11 @@ class CloudinaryService {
         if (publicId.includes(".pdf")) {
             return await cloudinary.uploader.destroy(publicId, {
                 resource_type: 'raw', invalidate: true, type: 'authenticated'
-            }).then((result) => { console.log(result) })
+            }).then((result) => { logger.debug({ result, publicId }, 'Asset deleted') })
         }
         return await cloudinary.uploader.destroy(publicId, {
             resource_type: 'image', invalidate: true, type: 'authenticated'
-        }).then((result) => { console.log(publicId, result) })
+        }).then((result) => { logger.debug({ publicId, result }, 'Asset deleted') })
     }
 
 }

@@ -20,7 +20,7 @@ export function authenticator(req: Request, res: Response, next: NextFunction) {
         const [header, token] = authString.split(" ")
         if (!header || !token) return res.status(401).json({ message: "Invalid jwt token" })
 
-        const payload: JwtPayload | string = verifyJWT(token!)
+        const payload: JwtPayload | string = verifyJWT(token)
         const _req = req as AuthRequest
         _req.sub = payload.sub as unknown as Sub
         req.log = req.log.child({ userId: _req.sub.id, requestId: req.id })

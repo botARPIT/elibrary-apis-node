@@ -2,6 +2,7 @@ import { User } from "./userModel.js";
 import type { userRegisterDTO } from "./userTypes.js";
 import { hashPassword } from "../utils/hash.js";
 import { createJWT } from "../utils/jwt.js";
+import { logger } from "../utils/logger.js";
 
 class UserService {
     async createUser(dto: userRegisterDTO) {
@@ -9,7 +10,7 @@ class UserService {
         const user = new User({ name: dto.name, email: dto.email, password: hashedPassword });
         const createdUser = await user.save()
         const token = createJWT({ id: String(createdUser._id) })
-        console.log(createdUser)
+        logger.debug({ userId: createdUser._id }, "User created")
         return { createdUser, token }
     }
 

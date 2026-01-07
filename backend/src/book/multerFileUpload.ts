@@ -2,6 +2,7 @@ import type { Request } from "express";
 import type { fileUploadType } from "./bookTypes.js";
 import { config } from "../config/config.js";
 import { getDirectoryName } from "../utils/getDirectoryName.js";
+import { logger } from "../utils/logger.js";
 import multer from 'multer'
 import path from 'node:path'
 
@@ -41,7 +42,7 @@ async function multerUploadCoverImage(req: Request) {
         const coverImageMimeType = files.coverImage[0]?.mimetype.split('/').at(-1) as string
         const coverImageFileName = files.coverImage[0]?.filename as string
         const coverImageFilePath = path.resolve(__dirname, coverImageFileName)
-        console.log("from multer file upload, coverimage file path", coverImageFilePath)
+        logger.debug({ coverImageFilePath }, "Cover image file path from multer")
         return {
             coverImageMimeType,
             coverImageFileName,
@@ -63,7 +64,7 @@ async function multerUploadBookFile(req: Request) {
         const bookFileName = files.file[0]?.filename as string
         const bookFileMimeType = files.file[0]?.mimetype.split('/').at(-1) as string
         const bookFilePath = path.resolve(__dirname, bookFileName)
-        console.log("from multer file upload, book file path", bookFilePath)
+        logger.debug({ bookFilePath }, "Book file path from multer")
         return {
             bookFileName,
             bookFileMimeType,
@@ -82,7 +83,7 @@ function getFileUploadPath() {
             limits: { fileSize: config.max_file_size }
         })
     }
-    console.log("from get file upload method in multer file upload", fileUploadPath)
+    logger.debug("File upload path initialized")
     return fileUploadPath
 }
 
