@@ -18,9 +18,8 @@ const app = express()
 const corsOptions = {
     origin: [
         'http://localhost:5173',    // Vite dev server
-        'http://127.0.0.1:5173',
         'http://localhost:3000',    // Alternative React dev server
-        'http://127.0.0.1:3000',
+        'https://elib.arpitdev.site'
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
