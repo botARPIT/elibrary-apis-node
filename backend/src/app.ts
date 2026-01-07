@@ -19,14 +19,22 @@ const corsOptions = {
     origin: [
         'http://localhost:5173',    // Vite dev server
         'http://localhost:3000',    // Alternative React dev server
-        'https://elib.arpitdev.site'
+        'https://elib.arpitdev.site' // Production frontend
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    exposedHeaders: ['Content-Range', 'X-Content-Range'],
+    maxAge: 86400, // 24 hours
+    preflightContinue: false,
+    optionsSuccessStatus: 204
 }
 
 app.use(cors(corsOptions))
+
+// Explicit preflight handler for all routes
+app.options('*', cors(corsOptions))
+
 app.use(express.json())
 app.use(promMetrics)
 app.use(httpLogger)
