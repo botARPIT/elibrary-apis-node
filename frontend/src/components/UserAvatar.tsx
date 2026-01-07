@@ -8,14 +8,20 @@ interface UserAvatarProps {
 }
 
 function UserAvatarComponent({ name, email, size = 'md', className = '' }: UserAvatarProps) {
-  // Get first letter of name or email
+  // Get initials from name or email
   const getInitials = (): string => {
     if (name && name.trim().length > 0) {
-      return name.trim()[0].toUpperCase();
+      const parts = name.trim().split(' ');
+      // For full names like "John Doe", show "JD"
+      if (parts.length >= 2) {
+        return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+      }
+      // For single names like "John", show "JO" (first 2 chars)
+      return name.substring(0, 2).toUpperCase();
     }
 
     if (email && email.length > 0) {
-      return email[0].toUpperCase();
+      return email.substring(0, 2).toUpperCase();
     }
 
     return 'U';
