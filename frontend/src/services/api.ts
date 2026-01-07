@@ -10,7 +10,6 @@ import type {
 } from '../types';
 import { sanitizeErrorMessage } from '../utils/validation';
 import config from '../config';
-import { STORAGE_KEYS } from '../constants';
 
 // ============================================================================
 // Configuration

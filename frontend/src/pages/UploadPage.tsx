@@ -67,7 +67,9 @@ export function UploadPage() {
       const form = new FormData();
       form.append('title', formData.title.trim());
       form.append('genre', formData.genre);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       form.append('coverImage', coverImage!);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       form.append('file', bookFile!);
 
       await booksApi.create(form);

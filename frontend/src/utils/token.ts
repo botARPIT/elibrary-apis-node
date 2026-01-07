@@ -8,7 +8,9 @@
  */
 
 export interface TokenPayload {
-  sub?: { id?: string; email?: string };
+  sub?: { id?: string; email?: string; name?: string };
+  name?: string;
+  email?: string;
   exp?: number;
   iat?: number;
 }
@@ -63,7 +65,7 @@ export function getUserIdFromToken(token: string): string | null {
 export function getUserNameFromToken(token: string): string | null {
   const payload = decodeTokenPayload(token);
   // Try different possible locations for name in JWT
-  return (payload as any)?.name || (payload as any)?.sub?.name || null;
+  return payload?.name || payload?.sub?.name || null;
 }
 
 /**
@@ -73,7 +75,7 @@ export function getUserNameFromToken(token: string): string | null {
 export function getUserEmailFromToken(token: string): string | null {
   const payload = decodeTokenPayload(token);
   // Try different possible locations for email in JWT
-  return (payload as any)?.email || payload?.sub?.email || null;
+  return payload?.email || payload?.sub?.email || null;
 }
 
 /**

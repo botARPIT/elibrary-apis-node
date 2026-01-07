@@ -17,11 +17,11 @@ function UserAvatarComponent({ name, email, size = 'md', className = '' }: UserA
       }
       return name.substring(0, 2).toUpperCase();
     }
-    
+
     if (email) {
       return email.substring(0, 2).toUpperCase();
     }
-    
+
     return 'U';
   };
 
@@ -32,7 +32,7 @@ function UserAvatarComponent({ name, email, size = 'md', className = '' }: UserA
     for (let i = 0; i < str.length; i++) {
       hash = str.charCodeAt(i) + ((hash << 5) - hash);
     }
-    
+
     const colors = [
       'bg-primary-500',
       'bg-accent-500',
@@ -43,7 +43,7 @@ function UserAvatarComponent({ name, email, size = 'md', className = '' }: UserA
       'bg-yellow-500',
       'bg-red-500',
     ];
-    
+
     return colors[Math.abs(hash) % colors.length];
   };
 

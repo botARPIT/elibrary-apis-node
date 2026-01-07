@@ -15,7 +15,7 @@ export function Navbar() {
 
   // Close menu when route changes
   useEffect(() => {
-    setIsMenuOpen(false);
+    setTimeout(() => setIsMenuOpen(false), 0);
   }, [location.pathname]);
 
   const handleLogout = () => {
