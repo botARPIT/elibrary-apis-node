@@ -821,7 +821,7 @@ const getBooks = async (
                 const client = await getRedisClient();
                 if (client) {
                     await client.set(redisKey, JSON.stringify(data), {
-                        EX: 3600 // Cache expiry of 1 hour
+                        EX: 300 // Cache expiry of 5 minutes
                     })
                 }
             } catch (error) {
