@@ -63,8 +63,8 @@ export function HomePage() {
           </motion.h1>
 
           <motion.p variants={itemVariants} className="hero-description">
-            Explore a world of stories, knowledge, and imagination. Join our community
-            of readers and writers to share, discover, and celebrate the written word.
+            Explore a world of stories, knowledge, and imagination. Join our community of readers
+            and writers to share, discover, and celebrate the written word.
           </motion.p>
 
           <motion.div variants={itemVariants} className="hero-actions">
@@ -113,7 +113,8 @@ export function HomePage() {
             Why Choose <span className="text-gradient">E-Library</span>?
           </h2>
           <p style={{ maxWidth: '600px', margin: '0 auto' }}>
-            We provide the best platform for book lovers to discover, read, and share their favorite stories.
+            We provide the best platform for book lovers to discover, read, and share their favorite
+            stories.
           </p>
         </motion.div>
 
@@ -137,7 +138,8 @@ export function HomePage() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    background: 'linear-gradient(135deg, var(--color-primary-600), var(--color-secondary-600))',
+                    background:
+                      'linear-gradient(135deg, var(--color-primary-600), var(--color-secondary-600))',
                     borderRadius: 'var(--radius-xl)',
                   }}
                   whileHover={{ rotate: 10, scale: 1.1 }}
@@ -164,19 +166,21 @@ export function HomePage() {
           <div
             className="card"
             style={{
-              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(244, 63, 94, 0.1))',
+              background:
+                'linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(244, 63, 94, 0.1))',
               textAlign: 'center',
               padding: 'var(--space-16) var(--space-8)',
             }}
           >
-            <h2 style={{ marginBottom: 'var(--space-4)' }}>
-              Ready to Start Your Journey?
-            </h2>
+            <h2 style={{ marginBottom: 'var(--space-4)' }}>Ready to Start Your Journey?</h2>
             <p style={{ maxWidth: '500px', margin: '0 auto var(--space-8)' }}>
               Join thousands of readers and writers in our ever-growing community.
             </p>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link to={isAuthenticated ? '/books' : '/register'} className="btn btn-primary btn-lg">
+              <Link
+                to={isAuthenticated ? '/books' : '/register'}
+                className="btn btn-primary btn-lg"
+              >
                 {isAuthenticated ? 'Explore Books' : 'Get Started Free'}
                 <ArrowRight size={20} />
               </Link>
@@ -186,8 +190,13 @@ export function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer style={{ borderTop: '1px solid var(--color-border-subtle)', padding: 'var(--space-8) 0' }}>
-        <div className="container flex justify-between items-center" style={{ flexWrap: 'wrap', gap: 'var(--space-4)' }}>
+      <footer
+        style={{ borderTop: '1px solid var(--color-border-subtle)', padding: 'var(--space-8) 0' }}
+      >
+        <div
+          className="container flex justify-between items-center"
+          style={{ flexWrap: 'wrap', gap: 'var(--space-4)' }}
+        >
           <div className="flex items-center gap-3">
             <div
               style={{
@@ -196,7 +205,8 @@ export function HomePage() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                background: 'linear-gradient(135deg, var(--color-primary-500), var(--color-secondary-500))',
+                background:
+                  'linear-gradient(135deg, var(--color-primary-500), var(--color-secondary-500))',
                 borderRadius: 'var(--radius-md)',
               }}
             >

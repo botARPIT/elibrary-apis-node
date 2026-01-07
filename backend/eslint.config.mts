@@ -1,27 +1,25 @@
-export default {
-  parser: '@typescript-eslint/parser',
-  parserOptions: {
-    ecmaVersion: 2020,
-    sourceType: 'module',
-    tsconfigRootDir: "./src/", // For Node.js 20.11+
-    project: './tsconfig.eslint.json', // Point to the ESLint-specific config
+import tseslint from 'typescript-eslint';
+
+export default tseslint.config(
+  ...tseslint.configs.recommended,
+  {
+    files: ['**/*.ts', '**/*.mts', '**/*.cts'],
+    rules: {
+      // TypeScript-specific rules
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
+      '@typescript-eslint/explicit-function-return-type': 'off',
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+      '@typescript-eslint/no-non-null-assertion': 'warn',
+
+      // General rules
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
+    },
   },
-  plugins: ['@typescript-eslint'],
-  extends: [
-    'eslint:recommended',
-    '@typescript-eslint/recommended',
-    "plugin: prettier/recommended",
-  ],
-  rules: {
-    // Your custom rules here
-    semi: "off",
-    "@typescript-eslint/semi": ["error", "always"],
-    "prettier/prettier": ["error", { semi: true }],
-  },
-  // Specify which files to lint
-  ignorePatterns: [
-    'dist/',
-    'node_modules/',
-    '*.js' // if you want to ignore JS files
-  ]
-};
+  {
+    ignores: ['dist/**', 'node_modules/**', '*.js', 'coverage/**', '.env*'],
+  }
+);

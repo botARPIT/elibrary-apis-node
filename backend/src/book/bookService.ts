@@ -1,5 +1,6 @@
 import { logger } from "../utils/logger.js"
 import { Book } from "./bookModel.js"
+import { Types } from "mongoose"
 import type { BookDTO, BookGenre, UpdateBookDTO } from "./bookTypes.js"
 import { cloudinaryService } from "./cloudinaryService.js"
 
@@ -158,7 +159,9 @@ class BookService {
             const skip = pageNumber === 0 ? 0 : (pageNumber - 1) * 10
 
             // Filter by author if provided
-            const matchStage = authorId ? { $match: { author: authorId } } : { $match: {} }
+            const matchStage = authorId
+                ? { $match: { author: new Types.ObjectId(authorId) } }
+                : { $match: {} }
 
             const result = await Book.aggregate([
                 matchStage,

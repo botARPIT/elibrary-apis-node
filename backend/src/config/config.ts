@@ -1,5 +1,4 @@
 import { config as dotenvConfig } from 'dotenv'
-console.log('CWD:', process.cwd())
 
 dotenvConfig()
 const _config = {
