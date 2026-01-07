@@ -371,12 +371,13 @@ class BookService {
                 )
                 throw new Error(`Unable to find book with id ${bookId}`)
             }
-            if (authorId != String(currentBook.author)) {
+            if (authorId != String(currentBook.author._id)) {
 
                 logger.warn(
                     {
                         requestId: requestId,
                         userId: authorId,
+                        bookAuthorId: String(currentBook.author._id),
                         bookId: bookId,
                         operation: "update_book"
                     },
