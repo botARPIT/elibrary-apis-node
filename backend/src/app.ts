@@ -9,6 +9,7 @@ import { httpLogger } from './utils/logger.js'
 import { promMetrics } from './middlewares/prometheusMetrics.js'
 import { metricRouter } from "./observability/metricsRouter.js"
 import { healthRouter } from './health/healthRouter.js'
+import { apiLimiter } from './middlewares/rateLimiter.js'
 import type { Request, Response } from 'express'
 
 
@@ -38,6 +39,9 @@ app.options('*', cors(corsOptions))
 app.use(express.json())
 app.use(promMetrics)
 app.use(httpLogger)
+
+// Apply rate limiting to all API routes
+app.use('/api/', apiLimiter)
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
     customCss: 'swagger-ui .topbar {display: none}',

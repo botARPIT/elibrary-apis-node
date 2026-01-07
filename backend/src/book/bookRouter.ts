@@ -3,6 +3,7 @@ import { createBook, deleteBook, getBookById, getBooks, updateBook } from './boo
 import { proxyBookFile, proxyBookCover } from './bookProxyController.js'
 import { authenticator } from '../middlewares/authenticator.js'
 import { fileUploadMiddleware } from '../middlewares/fileUploadMiddleware.js'
+import { uploadLimiter } from '../middlewares/rateLimiter.js'
 
 const bookRouter = express.Router()
 
@@ -10,9 +11,9 @@ const bookRouter = express.Router()
 bookRouter.get("/proxy/file/:bookId", proxyBookFile)
 bookRouter.get("/proxy/cover/:bookId", proxyBookCover)
 
-bookRouter.post("/upload", authenticator, fileUploadMiddleware, createBook)
+bookRouter.post("/upload", authenticator, uploadLimiter, fileUploadMiddleware, createBook)
 
-bookRouter.patch("/update/:bookId", authenticator, fileUploadMiddleware, updateBook)
+bookRouter.patch("/update/:bookId", authenticator, uploadLimiter, fileUploadMiddleware, updateBook)
 
 bookRouter.get("/id/:bookId", getBookById)
 
