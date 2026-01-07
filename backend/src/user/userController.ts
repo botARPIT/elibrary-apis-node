@@ -240,7 +240,13 @@ const loginUser = async (
         if (!user) return next(createHttpError(404, "User not found"))
         const isValidPass = await verifyHash(data.password, user.password)
         if (!isValidPass) return next(createHttpError(401, "Invalid credentials"))
-        if (isValidPass) { token = createJWT({ id: String(user._id) }) }
+        if (isValidPass) {
+            token = createJWT({
+                id: String(user._id),
+                name: user.name,
+                email: user.email
+            })
+        }
         res.status(200).json({ message: "Login successful", accessToken: token })
     } catch (error) {
         if (error instanceof ZodError) {
